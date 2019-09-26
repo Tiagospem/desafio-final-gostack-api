@@ -9,9 +9,11 @@
     "migrate": "sequelize db:migrate"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "mysql2": "^1.7.0",
-    "sequelize": "^5.19.0"
+    "sequelize": "^5.19.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "eslint": "^6.4.0",
