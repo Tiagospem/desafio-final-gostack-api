@@ -1,5 +1,5 @@
 import Sequelize, { Model } from 'sequelize'
-import { hash } from 'bcryptjs'
+import { hash, compare } from 'bcryptjs'
 
 class User extends Model {
   static init(sequelize) {
@@ -21,6 +21,10 @@ class User extends Model {
       }
     })
     return this
+  }
+
+  checkPassword(password) {
+    return compare(password, this.password_hash)
   }
 }
 
