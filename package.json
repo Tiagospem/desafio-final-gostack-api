@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "fix": "eslint --fix src --ext .js"
+    "fix": "eslint --fix src --ext .js",
+    "migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "express": "^4.17.1",
