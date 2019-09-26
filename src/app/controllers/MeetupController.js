@@ -20,15 +20,62 @@ class MeetupController {
   }
 
   async store(req, res) {
-    return res.json()
+    try {
+      const data = req.body
+      const meetup = await Meetup.create({
+        ...data,
+        user_id: req.userId
+      })
+      return res.json(meetup)
+    } catch (err) {
+      return res.status(400).json({
+        message: 'Error to create meetup'
+      })
+    }
   }
 
   async update(req, res) {
-    return res.json()
+    try {
+      const { meetup_id } = req.params
+      const user_id = req.userId
+      const meetupExists = await Meetup.findByPk(meetup_id)
+
+      if (!meetupExists)
+        throw { code: 400, message: 'The meetup does not exists' }
+
+      if (meetupExists.user_id !== user_id)
+        throw { code: 401, message: 'Unauthorized' }
+
+      const meetup = await meetupExists.update(req.body)
+
+      return res.json(meetup)
+    } catch (err) {
+      return res.status(err.code).json({
+        message: err.message
+      })
+    }
   }
 
   async delete(req, res) {
-    return res.json()
+    try {
+      const { meetup_id } = req.params
+      const user_id = req.userId
+      const meetupExists = await Meetup.findByPk(meetup_id)
+
+      if (!meetupExists)
+        throw { code: 400, message: 'The meetup does not exists' }
+
+      if (meetupExists.user_id !== user_id)
+        throw { code: 401, message: 'Unauthorized' }
+
+      await meetupExists.destroy()
+
+      return res.json({ message: 'Meetup deleted' })
+    } catch (err) {
+      return res.status(err.code).json({
+        message: err.message
+      })
+    }
   }
 }
 
