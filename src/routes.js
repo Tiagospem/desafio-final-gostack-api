@@ -21,6 +21,7 @@ route.put('/users', UserController.update)
 
 route.post('/files', upload.single('file'), FileController.store)
 
+route.get('/meetups', MeetupController.index)
 route.post('/meetups', MeetupController.store)
 route.get('/meetups/:meetup_id', MeetupController.show)
 route.put('/meetups/:meetup_id', MeetupController.update)

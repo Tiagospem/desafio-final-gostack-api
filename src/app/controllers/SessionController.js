@@ -5,37 +5,43 @@ import authconfig from '../../config/auth'
 
 class SessionController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string().required()
-    })
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' })
-    }
-
-    const { email, password } = req.body
-
-    const user = await User.findOne({ where: { email } })
-
-    if (!user) {
-      return res.status(401).json({ error: 'The user is not found' })
-    }
-
-    if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'The password doesnt match' })
-    }
-
-    const { id, name } = user
-
-    return res.json({
-      user: { id, name, email },
-      token: jwt.sign({ id }, authconfig.secret, {
-        expiresIn: authconfig.expiresIn
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email()
+          .required(),
+        password: Yup.string().required()
       })
-    })
+
+      if (!(await schema.isValid(req.body))) {
+        throw 'Validation fails'
+      }
+
+      const { email, password } = req.body
+
+      const user = await User.findOne({ where: { email } })
+
+      if (!user) {
+        throw 'The user is not found'
+      }
+
+      if (!(await user.checkPassword(password))) {
+        throw 'The password doesnt match'
+      }
+
+      const { id, name } = user
+
+      return res.json({
+        user: { id, name, email },
+        token: jwt.sign({ id }, authconfig.secret, {
+          expiresIn: authconfig.expiresIn
+        })
+      })
+    } catch (err) {
+      return res.status(400).json({
+        message: err
+      })
+    }
   }
 }
 

@@ -14,6 +14,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    'no-throw-literal': 'off',
     'class-methods-use-this': 'off',
     'no-param-reassign': 'off',
     'camelcase': 'off',
