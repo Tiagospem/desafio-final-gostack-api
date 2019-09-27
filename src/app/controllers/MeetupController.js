@@ -33,7 +33,16 @@ class MeetupController {
   async show(req, res) {
     try {
       const { meetup_id } = req.params
-      const meetup = await Meetup.findByPk(meetup_id)
+      const meetup = await Meetup.findOne({
+        where: { id: meetup_id },
+        include: [
+          {
+            model: File,
+            as: 'banner',
+            attributes: ['id', 'url', 'path']
+          }
+        ]
+      })
       if (!meetup) throw { code: 404, message: 'The meetup does not exists' }
       return res.json(meetup)
     } catch (err) {
