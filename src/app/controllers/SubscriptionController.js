@@ -1,8 +1,11 @@
 import * as Yup from 'yup'
+import { format } from 'date-fns'
 import Subscription from '../models/Subscription'
 import Meetup from '../models/Meetup'
 import User from '../models/User'
 import File from '../models/File'
+
+import Mail from '../../lib/Mail'
 
 class SubscriptionController {
   async index(req, res) {
@@ -42,10 +45,7 @@ class SubscriptionController {
     try {
       const { subscription_id } = req.params
       const user_id = req.userId
-      const subscription = await Subscription.findOne({
-        where: {
-          id: subscription_id
-        },
+      const subscription = await Subscription.findByPk(subscription_id, {
         include: [
           {
             model: Meetup,
@@ -93,7 +93,15 @@ class SubscriptionController {
       const meetup_id = req.body.meetup_id
       const user_id = req.userId
 
-      const meetup = await Meetup.findByPk(meetup_id)
+      const meetup = await Meetup.findByPk(meetup_id, {
+        include: [
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['email']
+          }
+        ]
+      })
 
       if (!meetup) throw { code: 404, message: 'The meetup doest not exists' }
 
@@ -132,6 +140,19 @@ class SubscriptionController {
 
       const subscription = await Subscription.create({ meetup_id, user_id })
 
+      const { name } = await User.findByPk(user_id)
+
+      await Mail.sendMail({
+        to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
+        subject: `${name} was subscribed your meetup`,
+        template: 'newsubscriber',
+        context: {
+          name,
+          meetup,
+          date: subscription.created_at
+        }
+      })
+
       return res.json(subscription)
     } catch (err) {
       return res.status(err.code).json({ message: err.message })
@@ -142,8 +163,7 @@ class SubscriptionController {
     try {
       const { subscription_id } = req.params
       const user_id = req.userId
-      const subscription = await Subscription.findOne({
-        where: { id: subscription_id },
+      const subscription = await Subscription.findByPk(subscription_id, {
         include: [
           {
             model: Meetup,

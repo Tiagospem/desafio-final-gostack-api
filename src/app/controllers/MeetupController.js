@@ -50,8 +50,7 @@ class MeetupController {
   async show(req, res) {
     try {
       const { meetup_id } = req.params
-      const meetup = await Meetup.findOne({
-        where: { id: meetup_id },
+      const meetup = await Meetup.findByPk(meetup_id, {
         include: [
           {
             model: File,
