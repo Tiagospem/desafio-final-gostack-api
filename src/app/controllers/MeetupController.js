@@ -1,15 +1,27 @@
 import * as Yup from 'yup'
-import { parseISO, isBefore } from 'date-fns'
+import { Op } from 'sequelize'
+import { parseISO, isBefore, startOfDay, endOfDay } from 'date-fns'
 import Meetup from '../models/Meetup'
 import File from '../models/File'
+import User from '../models/User'
 
 class MeetupController {
   async index(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query
-      const user_id = req.userId
+      const where = {}
+      const { page = 1, limit = 10, findDate = null } = req.query
+
+      if (findDate) {
+        where.date = {
+          [Op.between]: [
+            startOfDay(parseISO(findDate)),
+            endOfDay(parseISO(findDate))
+          ]
+        }
+      }
+
       const meetups = await Meetup.findAll({
-        where: { user_id },
+        where,
         order: ['date'],
         limit: Number(limit),
         offset: (page - 1) * Number(limit),
@@ -18,6 +30,11 @@ class MeetupController {
             model: File,
             as: 'banner',
             attributes: ['id', 'url', 'path']
+          },
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['id', 'name', 'email']
           }
         ]
       })
@@ -40,6 +57,11 @@ class MeetupController {
             model: File,
             as: 'banner',
             attributes: ['id', 'url', 'path']
+          },
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['name', 'email']
           }
         ]
       })
@@ -107,7 +129,7 @@ class MeetupController {
       if (meetupExists.user_id !== user_id)
         throw { code: 401, message: 'Unauthorized' }
 
-      if (isBefore(meetupExists.date, dateNow))
+      if (meetupExists.past_meetup)
         throw { code: 401, message: 'You cant update past meetups' }
 
       if (isBefore(parseISO(data.date), dateNow))

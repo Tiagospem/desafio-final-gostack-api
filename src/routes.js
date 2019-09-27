@@ -9,6 +9,7 @@ import SessionController from './app/controllers/SessionController'
 import UserController from './app/controllers/UserController'
 import FileController from './app/controllers/FileController'
 import MeetupController from './app/controllers/MeetupController'
+import SubscriptionController from './app/controllers/SubscriptionController'
 
 const route = new Router()
 const upload = multer(multerconfig)
@@ -26,5 +27,10 @@ route.post('/meetups', MeetupController.store)
 route.get('/meetups/:meetup_id', MeetupController.show)
 route.put('/meetups/:meetup_id', MeetupController.update)
 route.delete('/meetups/:meetup_id', MeetupController.delete)
+
+route.get('/subscriptions', SubscriptionController.index)
+route.post('/subscriptions', SubscriptionController.store)
+route.get('/subscriptions/:subscription_id', SubscriptionController.show)
+route.delete('/subscriptions/:subscription_id', SubscriptionController.delete)
 
 export default route
