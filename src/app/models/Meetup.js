@@ -5,6 +5,7 @@ class Meetup extends Model {
     super.init(
       {
         user_id: Sequelize.STRING,
+        banner_id: Sequelize.INTEGER,
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
         location: Sequelize.STRING,
@@ -13,6 +14,10 @@ class Meetup extends Model {
       { sequelize }
     )
     return this
+  }
+
+  static associate(models) {
+    this.hasOne(models.File, { foreignKey: 'banner_id', as: 'banner' })
   }
 }
 export default Meetup

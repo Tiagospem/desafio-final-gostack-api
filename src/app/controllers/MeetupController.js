@@ -1,12 +1,33 @@
 import * as Yup from 'yup'
 import { parseISO, isBefore } from 'date-fns'
 import Meetup from '../models/Meetup'
+import File from '../models/File'
 
 class MeetupController {
   async index(req, res) {
-    const user_id = req.userId
-    const meetups = await Meetup.findAll({ where: { user_id } })
-    return res.json(meetups)
+    try {
+      const { page = 1, limit = 10 } = req.query
+      const user_id = req.userId
+      const meetups = await Meetup.findAll({
+        where: { user_id },
+        order: ['date'],
+        limit: Number(limit),
+        offset: (page - 1) * Number(limit),
+        include: [
+          {
+            model: File,
+            as: 'banner',
+            attributes: ['id', 'url', 'path']
+          }
+        ]
+      })
+      return res.json(meetups)
+    } catch (err) {
+      return res.status(400).json({
+        message: 'Erro to load meetups',
+        error: err
+      })
+    }
   }
 
   async show(req, res) {
