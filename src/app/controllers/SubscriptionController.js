@@ -74,7 +74,7 @@ class SubscriptionController {
 
       return res.json(subscription)
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
@@ -92,7 +92,7 @@ class SubscriptionController {
       const meetup_id = req.body.meetup_id
       const user_id = req.userId
 
-      const meetup = await Meetup.findByPks(meetup_id, {
+      const meetup = await Meetup.findByPk(meetup_id, {
         include: [
           {
             model: User,
@@ -149,7 +149,7 @@ class SubscriptionController {
 
       return res.json(subscription)
     } catch (err) {
-      return res.status(err.code).json({ message: err.message })
+      return res.status(err.code || 400).json({ message: err.message })
     }
   }
 
@@ -179,7 +179,7 @@ class SubscriptionController {
 
       return res.json({ message: 'Unsubscribed' })
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }

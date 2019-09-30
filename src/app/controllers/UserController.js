@@ -27,7 +27,7 @@ class UserController {
 
       return res.json({ id, name, email })
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
@@ -67,7 +67,7 @@ class UserController {
 
       return res.json({ id, name, email })
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }

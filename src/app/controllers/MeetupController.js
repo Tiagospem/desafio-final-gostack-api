@@ -67,7 +67,7 @@ class MeetupController {
       if (!meetup) throw { code: 404, message: 'The meetup does not exists' }
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
@@ -97,7 +97,7 @@ class MeetupController {
       })
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
@@ -138,7 +138,7 @@ class MeetupController {
 
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
@@ -164,7 +164,7 @@ class MeetupController {
 
       return res.json({ message: 'Meetup deleted' })
     } catch (err) {
-      return res.status(err.code).json({
+      return res.status(err.code || 400).json({
         message: err.message
       })
     }
