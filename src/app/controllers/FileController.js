@@ -9,9 +9,9 @@ class FileController {
 
       return res.json(file)
     } catch (err) {
-      console.log(err)
-      return res.status(400).json({
-        error: { message: 'Error to save image' }
+      return res.status(500).json({
+        message: 'Error to save image',
+        err
       })
     }
   }

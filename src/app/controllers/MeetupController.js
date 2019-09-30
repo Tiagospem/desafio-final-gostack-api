@@ -40,9 +40,9 @@ class MeetupController {
       })
       return res.json(meetups)
     } catch (err) {
-      return res.status(400).json({
-        message: 'Erro to load meetups',
-        error: err
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -64,11 +64,13 @@ class MeetupController {
           }
         ]
       })
-      if (!meetup) throw { code: 404, message: 'The meetup does not exists' }
+      if (!meetup)
+        return res.status(404).json({ message: 'The meetup does not exists' })
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -84,12 +86,12 @@ class MeetupController {
       })
 
       if (!(await schema.isValid(data)))
-        throw { code: 400, message: 'Validation fail' }
+        return res.status(400).json({ message: 'Validation fail' })
 
       const dateNow = new Date()
 
       if (isBefore(parseISO(data.date), dateNow))
-        throw { code: 400, message: 'Invalid date' }
+        return res.status(400).json({ message: 'Invalida date' })
 
       const meetup = await Meetup.create({
         ...data,
@@ -97,8 +99,9 @@ class MeetupController {
       })
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -115,7 +118,7 @@ class MeetupController {
       })
 
       if (!(await schema.isValid(data)))
-        throw { code: 400, message: 'Validation fail' }
+        return res.status(400).json({ message: 'Validation fail' })
 
       const dateNow = new Date()
       const { meetup_id } = req.params
@@ -123,23 +126,24 @@ class MeetupController {
       const meetupExists = await Meetup.findByPk(meetup_id)
 
       if (!meetupExists)
-        throw { code: 404, message: 'The meetup does not exists' }
+        return res.status(404).json({ message: 'The meetup does not exists' })
 
       if (meetupExists.user_id !== user_id)
-        throw { code: 401, message: 'Unauthorized' }
+        return res.status(401).json({ message: 'Unauthorized' })
 
       if (meetupExists.past_meetup)
-        throw { code: 401, message: 'You cant update past meetups' }
+        return res.status(401).json({ message: 'You cant update past meetups' })
 
       if (isBefore(parseISO(data.date), dateNow))
-        throw { code: 400, message: 'Invalid date' }
+        return res.status(400).json({ message: 'Invalid date' })
 
       const meetup = await meetupExists.update(data)
 
       return res.json(meetup)
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -152,20 +156,21 @@ class MeetupController {
       const meetupExists = await Meetup.findByPk(meetup_id)
 
       if (!meetupExists)
-        throw { code: 404, message: 'The meetup does not exists' }
+        return res.status(404).json({ message: 'The meetup does not exists' })
 
       if (meetupExists.user_id !== user_id)
-        throw { code: 401, message: 'Unauthorized' }
+        return res.status(404).json({ message: 'Unauthorized' })
 
       if (isBefore(meetupExists.date, dateNow))
-        throw { code: 401, message: 'You cant cancel past meetups' }
+        return res.status(401).json({ message: 'You cant cancel past meetups' })
 
       await meetupExists.destroy()
 
       return res.json({ message: 'Meetup deleted' })
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }

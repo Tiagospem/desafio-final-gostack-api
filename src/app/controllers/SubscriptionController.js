@@ -33,9 +33,9 @@ class SubscriptionController {
       })
       return res.json(subscriptions)
     } catch (err) {
-      return res.status(400).json({
-        message: err.message,
-        error: err
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -70,12 +70,15 @@ class SubscriptionController {
       })
 
       if ((subscription && subscription.user_id !== user_id) || !subscription)
-        throw { code: 404, message: 'The subscription does not exists' }
+        return res
+          .status(404)
+          .json({ message: 'The subscription does not exists' })
 
       return res.json(subscription)
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Error',
+        err
       })
     }
   }
@@ -87,7 +90,7 @@ class SubscriptionController {
       })
 
       if (!(await schema.isValid(req.body)))
-        throw { code: 400, message: 'Validation fail' }
+        return res.status(400).json({ message: 'Validation fail' })
 
       const meetup_id = req.body.meetup_id
       const user_id = req.userId
@@ -102,19 +105,25 @@ class SubscriptionController {
         ]
       })
 
-      if (!meetup) throw { code: 404, message: 'The meetup doest not exists' }
+      if (!meetup)
+        return res.status(404).json({ message: 'The meetup doest not exists' })
 
-      if (meetup.past_meetup) throw { code: 401, message: 'The meetup ended' }
+      if (meetup.past_meetup)
+        return res.status(401).json({ message: 'The meetup ended' })
 
       if (user_id === meetup.user_id)
-        throw { code: 401, message: 'You cant subscribe in your own meetup' }
+        return res
+          .status(401)
+          .json({ message: 'You cant subscribe in your own meetup' })
 
       const subscriptionExists = await Subscription.findOne({
         where: { user_id, meetup_id }
       })
 
       if (subscriptionExists)
-        throw { code: 401, message: 'You already subscribed this meetup' }
+        return res
+          .status(401)
+          .json({ message: 'You already subscribed this meetup' })
 
       const checkSubIncompatibility = await Subscription.findOne({
         where: { user_id },
@@ -130,12 +139,11 @@ class SubscriptionController {
       })
 
       if (checkSubIncompatibility)
-        throw {
-          code: 401,
+        return res.status(401).json({
           message: `You already have a meetup in this date.
           (${checkSubIncompatibility.meetup.title}), please cancel it and
            try agan.`
-        }
+        })
 
       const subscription = await Subscription.create({ meetup_id, user_id })
 
@@ -149,7 +157,7 @@ class SubscriptionController {
 
       return res.json(subscription)
     } catch (err) {
-      return res.status(err.code || 400).json({ message: err.message })
+      return res.status(500).json({ message: 'Error', err })
     }
   }
 
@@ -167,20 +175,25 @@ class SubscriptionController {
       })
 
       if (!subscription)
-        throw { code: 404, message: 'The subscription does not exists' }
+        return res
+          .status(404)
+          .json({ message: 'The subscription does not exists' })
 
       if (subscription.user_id !== user_id)
-        throw { code: 401, message: 'Unauthorized' }
+        return res.status(401).json({ message: 'Unauthorized' })
 
       if (subscription.meetup.past_meetup)
-        throw { code: 401, message: 'You cant unsubscribe ended meetups' }
+        return res
+          .status(401)
+          .json({ message: 'You cant unsubscribe ended meetups' })
 
       await subscription.destroy()
 
       return res.json({ message: 'Unsubscribed' })
     } catch (err) {
-      return res.status(err.code || 400).json({
-        message: err.message
+      return res.status(500).json({
+        message: 'Erro',
+        err
       })
     }
   }
