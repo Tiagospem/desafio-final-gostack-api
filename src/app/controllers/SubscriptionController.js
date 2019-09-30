@@ -98,7 +98,7 @@ class SubscriptionController {
           {
             model: User,
             as: 'organizer',
-            attributes: ['email']
+            attributes: ['email', 'name']
           }
         ]
       })
@@ -149,7 +149,7 @@ class SubscriptionController {
         context: {
           name,
           meetup,
-          date: subscription.created_at
+          date: subscription.createdAt
         }
       })
 
