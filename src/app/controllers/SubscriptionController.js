@@ -1,11 +1,10 @@
 import * as Yup from 'yup'
-import { format } from 'date-fns'
 import Subscription from '../models/Subscription'
 import Meetup from '../models/Meetup'
 import User from '../models/User'
 import File from '../models/File'
-
-import Mail from '../../lib/Mail'
+import SubscriptionMail from '../jobs/SubscriptionMail'
+import Queue from '../../lib/Queue'
 
 class SubscriptionController {
   async index(req, res) {
@@ -142,15 +141,10 @@ class SubscriptionController {
 
       const { name } = await User.findByPk(user_id)
 
-      await Mail.sendMail({
-        to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
-        subject: `${name} was subscribed your meetup`,
-        template: 'newsubscriber',
-        context: {
-          name,
-          meetup,
-          date: subscription.createdAt
-        }
+      await Queue.add(SubscriptionMail.key, {
+        meetup,
+        name,
+        subscription
       })
 
       return res.json(subscription)
