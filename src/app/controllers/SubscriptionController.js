@@ -92,7 +92,7 @@ class SubscriptionController {
       const meetup_id = req.body.meetup_id
       const user_id = req.userId
 
-      const meetup = await Meetup.findByPk(meetup_id, {
+      const meetup = await Meetup.findByPks(meetup_id, {
         include: [
           {
             model: User,
