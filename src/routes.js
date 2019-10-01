@@ -10,6 +10,7 @@ import UserController from './app/controllers/UserController'
 import FileController from './app/controllers/FileController'
 import MeetupController from './app/controllers/MeetupController'
 import SubscriptionController from './app/controllers/SubscriptionController'
+import OrganizerController from './app/controllers/OrganizerController'
 
 const route = new Router()
 const upload = multer(multerconfig)
@@ -32,5 +33,7 @@ route.get('/subscriptions', SubscriptionController.index)
 route.post('/subscriptions', SubscriptionController.store)
 route.get('/subscriptions/:subscription_id', SubscriptionController.show)
 route.delete('/subscriptions/:subscription_id', SubscriptionController.delete)
+
+route.get('/orgnaizer/:subscription_id', SubscriptionController.delete)
 
 export default route
