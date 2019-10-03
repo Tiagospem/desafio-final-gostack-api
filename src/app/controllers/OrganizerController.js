@@ -61,7 +61,7 @@ class OrganizerController {
         ]
       })
       if (!meetup)
-        return res.status(404).json({ message: 'The meetup does not exists' })
+        return res.status(400).json({ message: 'The meetup does not exists' })
       return res.json(meetup)
     } catch (err) {
       return res.status(500).json({
