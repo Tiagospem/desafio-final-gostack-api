@@ -34,6 +34,6 @@ route.post('/subscriptions', SubscriptionController.store)
 route.get('/subscriptions/:subscription_id', SubscriptionController.show)
 route.delete('/subscriptions/:subscription_id', SubscriptionController.delete)
 
-route.get('/orgnaizer/:subscription_id', SubscriptionController.delete)
+route.get('/organizers', OrganizerController.index)
 
 export default route
