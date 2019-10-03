@@ -1,6 +1,7 @@
 import Meetup from '../models/Meetup'
 import File from '../models/File'
 import User from '../models/User'
+import Subscription from '../models/Subscription'
 
 class OrganizerController {
   async index(req, res) {
@@ -26,6 +27,42 @@ class OrganizerController {
         ]
       })
       return res.json(meetups)
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Error',
+        err
+      })
+    }
+  }
+
+  async show(req, res) {
+    try {
+      const { meetup_id } = req.params
+      const meetup = await Meetup.findOne({
+        where: {
+          id: meetup_id,
+          user_id: req.userId
+        },
+        include: [
+          {
+            model: File,
+            as: 'banner',
+            attributes: ['id', 'url', 'path']
+          },
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['name', 'email']
+          },
+          {
+            model: Subscription,
+            as: 'subscriptions'
+          }
+        ]
+      })
+      if (!meetup)
+        return res.status(404).json({ message: 'The meetup does not exists' })
+      return res.json(meetup)
     } catch (err) {
       return res.status(500).json({
         message: 'Error',
