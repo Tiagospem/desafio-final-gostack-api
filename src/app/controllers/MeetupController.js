@@ -147,33 +147,6 @@ class MeetupController {
       })
     }
   }
-
-  async delete(req, res) {
-    try {
-      const dateNow = new Date()
-      const { meetup_id } = req.params
-      const user_id = req.userId
-      const meetupExists = await Meetup.findByPk(meetup_id)
-
-      if (!meetupExists)
-        return res.status(404).json({ message: 'The meetup does not exists' })
-
-      if (meetupExists.user_id !== user_id)
-        return res.status(404).json({ message: 'Unauthorized' })
-
-      if (isBefore(meetupExists.date, dateNow))
-        return res.status(401).json({ message: 'You cant cancel past meetups' })
-
-      await meetupExists.destroy()
-
-      return res.json({ message: 'Meetup deleted' })
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error',
-        err
-      })
-    }
-  }
 }
 
 export default new MeetupController()

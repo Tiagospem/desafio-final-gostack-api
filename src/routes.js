@@ -27,7 +27,6 @@ route.get('/meetups', MeetupController.index)
 route.post('/meetups', MeetupController.store)
 route.get('/meetups/:meetup_id', MeetupController.show)
 route.put('/meetups/:meetup_id', MeetupController.update)
-route.delete('/meetups/:meetup_id', MeetupController.delete)
 
 route.get('/subscriptions', SubscriptionController.index)
 route.post('/subscriptions', SubscriptionController.store)
@@ -36,5 +35,6 @@ route.delete('/subscriptions/:subscription_id', SubscriptionController.delete)
 
 route.get('/organizers', OrganizerController.index)
 route.get('/organizers/meetup/:meetup_id', OrganizerController.show)
+route.delete('/organizers/meetup/:meetup_id', OrganizerController.delete)
 
 export default route
