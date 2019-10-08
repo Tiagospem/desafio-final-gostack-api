@@ -24,6 +24,11 @@ class OrganizerController {
             model: User,
             as: 'organizer',
             attributes: ['id', 'name', 'email']
+          },
+          {
+            model: Subscription,
+            as: 'subscriptions',
+            attributes: ['id']
           }
         ]
       })

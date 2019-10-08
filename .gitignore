@@ -2,4 +2,11 @@ node_modules/
 .env
 
 temp/uploads/*
+
+!temp/uploads/image1.png
+!temp/uploads/image2.png
+!temp/uploads/image3.png
+!temp/uploads/image4.png
+!temp/uploads/image5.png
+
 !temp/uploads/.gitkeep
