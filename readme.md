@@ -8,7 +8,12 @@ $ yarn add mysql2
 $ cp .env.example .env
 ```
 
-then open .env and edit the environment variables
+then open .env and edit the environment variables and run migration and seeds
+
+```sh
+$ yarn sequelize db:migrate
+$ yarn sequelize db:seed:all
+```
 
 # Note
 
