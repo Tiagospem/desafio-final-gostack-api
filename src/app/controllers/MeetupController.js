@@ -38,7 +38,16 @@ class MeetupController {
           }
         ]
       })
-      return res.json(meetups)
+
+      const count = await Meetup.findAll({
+        where
+      })
+
+      return res.json({
+        meetups,
+        total: count.length,
+        pages: Math.ceil(count.length / limit)
+      })
     } catch (err) {
       return res.status(500).json({
         message: 'Error',
