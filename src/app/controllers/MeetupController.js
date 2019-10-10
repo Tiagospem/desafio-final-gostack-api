@@ -9,13 +9,13 @@ class MeetupController {
   async index(req, res) {
     try {
       const where = {}
-      const { page = 1, limit = 10, findDate = null } = req.query
+      const { page = 1, limit = 10, filter_date = null } = req.query
 
-      if (findDate) {
+      if (filter_date) {
         where.date = {
           [Op.between]: [
-            startOfDay(parseISO(findDate)),
-            endOfDay(parseISO(findDate))
+            startOfDay(parseISO(filter_date)),
+            endOfDay(parseISO(filter_date))
           ]
         }
       }
