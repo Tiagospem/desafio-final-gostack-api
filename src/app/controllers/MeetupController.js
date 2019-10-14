@@ -4,6 +4,7 @@ import { parseISO, isBefore, startOfDay, endOfDay } from 'date-fns'
 import Meetup from '../models/Meetup'
 import File from '../models/File'
 import User from '../models/User'
+import Subscription from '../models/Subscription'
 
 class MeetupController {
   async index(req, res) {
@@ -35,6 +36,13 @@ class MeetupController {
             model: User,
             as: 'organizer',
             attributes: ['id', 'name', 'email']
+          },
+          {
+            model: Subscription,
+            as: 'subscriptions',
+            required: false,
+            where: { user_id: req.userId },
+            attributes: ['id']
           }
         ]
       })

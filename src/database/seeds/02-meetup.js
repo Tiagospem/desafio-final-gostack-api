@@ -2,7 +2,7 @@
 const faker = require('faker')
 module.exports = {
   up: queryInterface => {
-    const meetups = generateMeetups(10)
+    const meetups = generateMeetups(50)
     console.log(meetups)
     return queryInterface.bulkInsert('meetups', meetups, {})
   },
