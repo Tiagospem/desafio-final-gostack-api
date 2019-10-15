@@ -52,7 +52,7 @@ class MeetupController {
             past_meetup: res.past_meetup,
             subscribed: !!res.subscriptions.length,
             subscription_id: res.subscriptions.length
-              ? res.subscriptions.id
+              ? res.subscriptions[0].id
               : null,
             banner: res.banner,
             organizer: res.organizer,
