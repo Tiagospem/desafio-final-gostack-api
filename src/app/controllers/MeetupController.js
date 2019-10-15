@@ -49,6 +49,7 @@ class MeetupController {
         const r = response.map(res => {
           return {
             id: res.id,
+            past_meetup: res.past_meetup,
             subscribed: !!res.subscriptions.length,
             banner: res.banner,
             organizer: res.organizer,
