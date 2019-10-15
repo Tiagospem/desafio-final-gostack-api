@@ -48,6 +48,7 @@ class MeetupController {
       }).then(response => {
         const r = response.map(res => {
           return {
+            id: res.id,
             subscribed: !!res.subscriptions.length,
             banner: res.banner,
             organizer: res.organizer,
