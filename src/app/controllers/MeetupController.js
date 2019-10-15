@@ -54,7 +54,7 @@ class MeetupController {
             title: res.title,
             description: res.description,
             location: res.location,
-            data: res.date
+            date: res.date
           }
         })
         return r
