@@ -17,6 +17,7 @@ class SubscriptionController {
         order: ['created_at'],
         limit: Number(limit),
         offset: (page - 1) * Number(limit),
+        attributes: ['id'],
         include: [
           {
             model: Meetup,
@@ -26,6 +27,11 @@ class SubscriptionController {
                 model: User,
                 as: 'organizer',
                 attributes: ['id', 'name', 'email']
+              },
+              {
+                model: File,
+                as: 'banner',
+                attributes: ['id', 'url', 'path']
               }
             ]
           }
