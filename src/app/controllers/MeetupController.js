@@ -45,6 +45,19 @@ class MeetupController {
             attributes: ['id']
           }
         ]
+      }).then(response => {
+        const r = response.map(res => {
+          return {
+            subscribed: !!res.subscriptions.length,
+            banner: res.banner,
+            organizer: res.organizer,
+            title: res.title,
+            description: res.description,
+            location: res.location,
+            data: res.date
+          }
+        })
+        return r
       })
 
       const count = await Meetup.findAll({
