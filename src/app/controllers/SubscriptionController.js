@@ -14,10 +14,10 @@ class SubscriptionController {
 
       const subscriptions = await Subscription.findAll({
         where: { user_id },
-        order: ['created_at'],
         limit: Number(limit),
         offset: (page - 1) * Number(limit),
         attributes: ['id'],
+        order: [[{ model: Meetup, as: 'meetup' }, 'date', 'DESC']],
         include: [
           {
             model: Meetup,
