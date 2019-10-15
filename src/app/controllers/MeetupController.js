@@ -23,7 +23,7 @@ class MeetupController {
 
       const meetups = await Meetup.findAll({
         where,
-        order: ['date'],
+        order: [['date', 'DESC']],
         limit: Number(limit),
         offset: (page - 1) * Number(limit),
         include: [
